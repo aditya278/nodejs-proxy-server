@@ -2,15 +2,18 @@ const express = require("express");
 const router = express.Router();
 const needle = require("needle");
 const url = require("url");
+const apicache = require("apicache");
 
 // Env vars
 const API_BASE_URL = process.env.API_BASE_URL;
 const API_KEY_NAME = process.env.API_KEY_NAME;
 const API_KEY_VALUE = process.env.API_KEY_VALUE;
 
-router.get("/", async (req, res) => {
+// Initialize Cache
+let cache = apicache.middleware;
+
+router.get("/", cache("2 minutes"), async (req, res) => {
   try {
-    
     // Generating the URL Params here
     const params = new URLSearchParams({
       [API_KEY_NAME]: API_KEY_VALUE,
